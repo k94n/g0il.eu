@@ -1,1 +1,104 @@
-<h1>404 is g0il</h1>
+<html lang="de">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="user-scalable=no, width=device-width, minimum-scale=1.0, maximum-scale=1.0"/>
+
+<style>
+	* {
+		box-sizing: border-box;
+	}
+
+	body {
+		font-family: sans-serif;
+		background: #f7f7f7;
+		background-position: center center;
+		background-size: cover;
+		margin:0;
+	}
+
+	h1 {
+		flex: 1;
+		font-size: calc( 50px + (100 - 50) * (100vw - 300px) / (1500 - 300) );
+		font-weight: 700;
+	}
+
+	noBreak {
+		white-space: nowrap;
+	}
+
+	boldText {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 100%;
+		text-align:center;
+		background:rgba(255,255,255,0.7);
+		padding: 20px;
+	}
+
+	name {
+		font-weight:900;
+	}
+</style>
+
+<boldText>
+	<h1>
+		<name></name>
+		<noBreak>
+			<notSureIf></notSureIf> g0il!
+		</noBreak>
+	</h1>
+</boldText>
+
+<script>
+		function appConstructor() {
+			var urlParts = this.getPath();
+			var props = getProps(urlParts);
+
+			setGiphyBackground(props);
+			render(props);
+		}
+
+		function getPath() {
+			var parser = document.createElement('a');
+			parser.href = location.href;
+			var parts = parser.pathname.split('/');
+			parts.map(function(part) { return decodeURIComponent(part); });
+			return parts;
+		}
+
+		function getProps(urlParts) {
+			return {
+				name: urlParts.slice(-1)[0] || "yo",
+				not: urlParts.slice(-2)[0] === "not" ? true : false,
+			};
+		}
+
+		function setGiphyBackground(props) {
+			var query =
+				(props.not ? "bad " : " great ")
+				+ (props.name || "");
+			var count = 20;
+
+			var request = new XMLHttpRequest();
+			request.open('GET', 'http://api.giphy.com/v1/gifs/search?q=' + query + '&api_key=dc6zaTOxFJmzC&limit=' + count, true);
+			request.onload = function() {
+			  if (this.status >= 200 && this.status < 400) {
+					var resp = JSON.parse(this.response);
+					var random = Math.ceil(Math.random() * resp.data.length);
+					var randomId = resp.data[random].id;
+					var url = 'https://media.giphy.com/media/' + randomId + '/giphy.gif';
+					document.body.style.backgroundImage = 'url('+url+')'
+			  }
+			};
+			request.send();
+		}
+
+		function render(props) {
+			document.querySelector('name').innerText = props.name;
+			document.querySelector('notSureIf').innerText =
+				"is"
+				+ (props.not ? " not" : '');
+		}
+
+		appConstructor();
+</script>
