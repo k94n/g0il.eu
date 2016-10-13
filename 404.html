@@ -10,8 +10,6 @@
 	body {
 		font-family: sans-serif;
 		background: #f7f7f7;
-		background-position: center center;
-		background-size: cover;
 		margin:0;
 	}
 
@@ -54,7 +52,6 @@
 			var urlParts = this.getPath();
 			var props = getProps(urlParts);
 
-			setGiphyBackground(props);
 			render(props);
 		}
 
@@ -71,26 +68,6 @@
 				name: urlParts.slice(-1)[0] || "yo",
 				not: urlParts.slice(-2)[0] === "not" ? true : false,
 			};
-		}
-
-		function setGiphyBackground(props) {
-			var query =
-				(props.not ? "bad " : " great ")
-				+ (props.name || "");
-			var count = 20;
-
-			var request = new XMLHttpRequest();
-			request.open('GET', 'http://api.giphy.com/v1/gifs/search?q=' + query + '&api_key=dc6zaTOxFJmzC&limit=' + count, true);
-			request.onload = function() {
-			  if (this.status >= 200 && this.status < 400) {
-					var resp = JSON.parse(this.response);
-					var random = Math.ceil(Math.random() * resp.data.length);
-					var randomId = resp.data[random].id;
-					var url = 'https://media.giphy.com/media/' + randomId + '/giphy.gif';
-					document.body.style.backgroundImage = 'url('+url+')'
-			  }
-			};
-			request.send();
 		}
 
 		function render(props) {
